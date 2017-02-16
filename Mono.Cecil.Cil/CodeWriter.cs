@@ -301,6 +301,10 @@ namespace Mono.Cecil.Cil {
 				instruction.offset = offset;
 				offset += instruction.GetSize ();
 
+				// safety check (in case .Replace was used without updating the rest of the method)
+				if ((instruction.operand is Instruction) && !body.instructions.Contains((Instruction) instruction.operand))
+					throw new Exception("Invalid IL - operand does not belong to method!");
+
 				ComputeStackSize (instruction, ref stack_sizes, ref stack_size, ref max_stack);
 			}
 

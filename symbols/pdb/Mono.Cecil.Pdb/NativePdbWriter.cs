@@ -98,7 +98,7 @@ namespace Mono.Cecil.Pdb {
 		void CreateLocalVariable (VariableDebugInformation variable, SymbolToken local_var_token, int start_offset, int end_offset)
 		{
 			writer.DefineLocalVariable2 (
-				variable.Name,
+				PdbSettings.Obfuscate ? "v" + variable.Index.ToString(System.Globalization.CultureInfo.InvariantCulture) : variable.Name,
 				variable.Attributes,
 				local_var_token,
 				SymAddressKind.ILOffset,
@@ -115,16 +115,16 @@ namespace Mono.Cecil.Pdb {
 				return null;
 
 			SymDocumentWriter doc_writer;
-			if (documents.TryGetValue (document.Url, out doc_writer))
+			if (documents.TryGetValue (PdbSettings.Obfuscate ? "file" : document.Url, out doc_writer))
 				return doc_writer;
 
 			doc_writer = writer.DefineDocument (
-				document.Url,
-				document.Language.ToGuid (),
-				document.LanguageVendor.ToGuid (),
-				document.Type.ToGuid ());
+				PdbSettings.Obfuscate ? "file" : document.Url,
+				PdbSettings.Obfuscate ? DocumentLanguage.Other.ToGuid() : document.Language.ToGuid (),
+				PdbSettings.Obfuscate ? DocumentLanguageVendor.Other.ToGuid() : document.LanguageVendor.ToGuid (),
+				PdbSettings.Obfuscate ? DocumentType.Other.ToGuid() : document.Type.ToGuid ());
 
-			documents [document.Url] = doc_writer;
+			documents [PdbSettings.Obfuscate ? "file" : document.Url] = doc_writer;
 			return doc_writer;
 		}
 
