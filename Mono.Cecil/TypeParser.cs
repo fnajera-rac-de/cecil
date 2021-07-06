@@ -415,7 +415,7 @@ namespace Mono.Cecil {
 				return null;
 
 			var name = new StringBuilder ();
-			AppendType (type, name, true, true);
+			AppendType (type, name, true, false);
 			return name.ToString ();
 		}
 
